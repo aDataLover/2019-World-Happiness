@@ -1,0 +1,50 @@
+select *
+from [dbo].[2017]
+order by Overall_Rank
+select *
+from [dbo].[2018]
+order by Overall_Rank
+select *
+from [dbo].[2019]
+order by Overall_Rank
+
+--finding out how much each country has moved in ranks across the years.  
+select [dbo].[2017].Country,
+	case
+	when [dbo].[2017].Overall_Rank>[dbo].[2018].Overall_Rank and [dbo].[2018].Overall_Rank >
+	[dbo].[2019].Overall_Rank then CONCAT('moved up by',[dbo].[2017].Overall_Rank-[dbo].[2019].Overall_Rank)
+		when [dbo].[2017].Overall_Rank<
+		[dbo].[2018].Overall_Rank and [dbo].[2018].Overall_Rank<
+	[dbo].[2019].Overall_Rank then CONCAT('moved down by',[dbo].[2019].Overall_Rank-[dbo].[2017].Overall_Rank)
+	else 'no change'
+	end as hapiness_trend
+	from [dbo].[2017]
+	join [dbo].[2018] on [dbo].[2017].Country=[dbo].[2018].Country
+	join [dbo].[2019] on [dbo].[2017].Country=[dbo].[2019].Country
+	order by [dbo].[2017].Country
+
+--counts the 10 least happy countries and groups according to intermediate region  
+select Intermediate_Region, count(*) as least_happy_countries
+from [dbo].[2019]
+where Overall_Rank between 147 and 156
+group by Intermediate_Region
+order by least_happy_countries desc
+
+----counts the 10 most happy countries and groups according to intermediate region 
+select Intermediate_Region, count(*) as most_happy_countries
+from [dbo].[2019]
+where Overall_Rank between 1 and 10
+group by Intermediate_Region
+order by most_happy_countries desc
+
+--brings up the top ten happiest countries
+select *
+from [dbo].[2019]
+where Overall_Rank between 1 and 10
+order by Overall_Rank 
+
+--brings up the ten least happy countries
+select *
+from [dbo].[2019]
+where Overall_Rank between 147 and 156
+order by Overall_Rank 
